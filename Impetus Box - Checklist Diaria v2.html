@@ -1,0 +1,2081 @@
+<!DOCTYPE html>
+<!-- saved from url=(0070)file:///Users/pabloparedesbettancourt/Downloads/impetus_checklist.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ímpetus Box — Checklist Diaria</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #111;
+    color: #eee;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* HEADER */
+  .header {
+    background: #000;
+    padding: 14px 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px #000;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .logo-text {
+    font-size: 22px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .logo-text span { color: #E94560; }
+
+  .date-badge {
+    background: #E94560;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    padding: 0 0 10px;
+  }
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 5px;
+  }
+  .progress-bar-bg {
+    background: #222;
+    border-radius: 6px;
+    height: 8px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 8px;
+    background: linear-gradient(90deg, #E94560, #ff6b6b);
+    border-radius: 6px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    background: #000;
+    border-top: 1px solid #1a1a1a;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: 0 0 auto;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #666;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .tab.active {
+    color: #E94560;
+    border-bottom-color: #E94560;
+  }
+
+  /* CONTENT */
+  .content { padding: 16px; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* SECTION TITLE */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .section-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .section-title { font-size: 14px; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
+  .section-sub { font-size: 11px; color: #888; margin-top: 2px; }
+
+  /* GROUP */
+  .group { margin-bottom: 20px; }
+  .group-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #E94560;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding-left: 4px;
+  }
+
+  /* TASK CARD */
+  .task {
+    background: #1a1a1a;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid #222;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .task:active { transform: scale(0.98); }
+  .task.done {
+    background: #0d1f0d;
+    border-color: #1a3a1a;
+  }
+
+  .checkbox {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 2px solid #444;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    margin-top: 1px;
+  }
+  .task.done .checkbox {
+    background: #2E7D32;
+    border-color: #2E7D32;
+  }
+  .checkbox-check {
+    color: #fff;
+    font-size: 13px;
+    display: none;
+    font-weight: 900;
+  }
+  .task.done .checkbox-check { display: block; }
+
+  .task-body { flex: 1; }
+  .task-text {
+    font-size: 13px;
+    color: #ddd;
+    line-height: 1.4;
+    transition: color 0.2s;
+  }
+  .task.done .task-text {
+    color: #555;
+    text-decoration: line-through;
+  }
+  .task-meta {
+    font-size: 10px;
+    color: #666;
+    margin-top: 3px;
+  }
+  .task.done .task-meta { color: #3a3a3a; }
+
+  .priority-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 8px;
+  }
+  .p-high { background: #E94560; }
+  .p-med  { background: #FFC107; }
+  .p-low  { background: #4CAF50; }
+
+  /* RESPONSIBLE TAG */
+  .resp-tag {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+  .resp-both { background: #1a237e; color: #90CAF9; }
+  .resp-encargado { background: #3E1F00; color: #FFB74D; }
+
+  /* RESET BUTTON */
+  .reset-btn {
+    display: block;
+    width: 100%;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: #888;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+  .reset-btn:hover { background: #222; color: #aaa; }
+
+  /* STATS BAR */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: #1a1a1a;
+    border-radius: 10px;
+    padding: 12px 8px;
+    text-align: center;
+    border: 1px solid #222;
+  }
+  .stat-num { font-size: 22px; font-weight: 900; color: #E94560; }
+  .stat-label { font-size: 9px; color: #666; margin-top: 2px; letter-spacing: 1px; text-transform: uppercase; }
+
+  /* WEEKLY SECTION */
+  .freq-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .freq-daily   { background: #1b3a1b; color: #81C784; }
+  .freq-weekly  { background: #1a237e; color: #90CAF9; }
+  .freq-monthly { background: #3E1F00; color: #FFB74D; }
+
+  /* ALERT BOX */
+  .alert {
+    background: #1a0a00;
+    border: 1px solid #E94560;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 11px;
+    color: #FFB74D;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+  .alert strong { color: #E94560; }
+
+  /* REUNION SECTION */
+  .reunion-card {
+    background: #1a1a1a;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-left: 3px solid #E94560;
+  }
+  .reunion-card h4 { font-size: 12px; color: #E94560; font-weight: 700; margin-bottom: 6px; }
+  .reunion-card ul { padding-left: 16px; }
+  .reunion-card li { font-size: 12px; color: #bbb; margin-bottom: 4px; line-height: 1.4; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #111; }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+  /* REPORTE MENSUAL */
+  .report-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+  .day-col { text-align: center; }
+  .day-col-header {
+    font-size: 9px; font-weight: 700; color: #E94560;
+    letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase;
+  }
+  .day-cell {
+    border-radius: 6px;
+    padding: 5px 2px;
+    margin-bottom: 3px;
+    font-size: 9px;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #222;
+    transition: transform 0.1s;
+    min-height: 38px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+  }
+  .day-cell:active { transform: scale(0.95); }
+  .day-cell.empty { background: transparent; border-color: transparent; cursor: default; }
+  .day-cell.no-data { background: #1a1a1a; color: #444; }
+  .day-cell.pct-100 { background: #1B5E20; color: #A5D6A7; border-color: #2E7D32; }
+  .day-cell.pct-high { background: #2E7D32; color: #C8E6C9; border-color: #388E3C; }
+  .day-cell.pct-mid  { background: #E65100; color: #FFE0B2; border-color: #F57C00; }
+  .day-cell.pct-low  { background: #B71C1C; color: #FFCDD2; border-color: #C62828; }
+  .day-cell .cell-date { font-size: 10px; font-weight: 900; }
+  .day-cell .cell-pct  { font-size: 11px; font-weight: 900; }
+  .day-cell .cell-dot  { font-size: 8px; }
+
+  .report-summary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .summary-card {
+    background: #1a1a1a;
+    border-radius: 10px;
+    padding: 14px 10px;
+    text-align: center;
+    border: 1px solid #222;
+  }
+  .summary-card .s-num { font-size: 26px; font-weight: 900; color: #E94560; }
+  .summary-card .s-lbl { font-size: 9px; color: #666; margin-top: 3px; letter-spacing: 1px; text-transform: uppercase; }
+  .summary-card .s-sub { font-size: 11px; color: #aaa; margin-top: 4px; }
+
+  .legend-row {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 10px; color: #888;
+  }
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0;
+  }
+
+  .snapshot-btn {
+    display: block; width: 100%;
+    background: linear-gradient(135deg, #E94560, #c62a3f);
+    border: none; color: #fff;
+    padding: 13px; border-radius: 10px;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer; margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    transition: opacity 0.2s;
+  }
+  .snapshot-btn:active { opacity: 0.85; }
+
+  .export-btn {
+    display: block; width: 100%;
+    background: #1a1a1a; border: 1px solid #333; color: #aaa;
+    padding: 11px; border-radius: 10px;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer; margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+  .export-btn:active { background: #222; }
+
+  .month-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .month-nav-btn {
+    background: #1a1a1a; border: 1px solid #333; color: #aaa;
+    width: 36px; height: 36px; border-radius: 8px;
+    font-size: 16px; cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .month-nav-btn:active { background: #E94560; color: #fff; border-color: #E94560; }
+  .month-label { font-size: 14px; font-weight: 800; color: #fff; }
+
+  .detail-popup {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 999;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .detail-popup.open { display: flex; }
+  .detail-inner {
+    background: #1a1a1a;
+    border-radius: 16px 16px 0 0;
+    padding: 20px 16px 32px;
+    width: 100%; max-width: 480px;
+    border-top: 3px solid #E94560;
+  }
+  .detail-inner h3 { font-size: 16px; color: #fff; font-weight: 800; margin-bottom: 4px; }
+  .detail-inner p  { font-size: 12px; color: #888; margin-bottom: 14px; }
+  .detail-bar-wrap { background: #111; border-radius: 8px; height: 12px; overflow: hidden; margin-bottom: 10px; }
+  .detail-bar-fill { height: 12px; border-radius: 8px; background: linear-gradient(90deg,#E94560,#ff6b6b); }
+  .detail-section { margin-bottom: 10px; }
+  .detail-section-title { font-size: 10px; color: #E94560; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .detail-row { display: flex; justify-content: space-between; font-size: 11px; color: #bbb; padding: 3px 0; border-bottom: 1px solid #222; }
+  .detail-row span:last-child { font-weight: 700; }
+  .detail-close { width:100%; background:#111; border:1px solid #333; color:#888; padding:10px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; margin-top:12px; }
+
+  /* ARRIVAL LOG CARD */
+  .arrival-card {
+    background: #1a1a1a;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 16px;
+    border: 1px solid #333;
+  }
+  .arrival-title { font-size: 12px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+  .arrival-log-btn {
+    display: block; width: 100%;
+    background: linear-gradient(135deg, #E94560, #c62a3f);
+    border: none; color: #fff;
+    padding: 11px; border-radius: 8px;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.5px;
+  }
+  .arrival-log-btn:active { opacity: 0.85; }
+  .arrival-status {
+    font-size: 12px; color: #81C784; margin-top: 8px; font-weight: 700;
+  }
+  .arrival-status.empty { color: #666; font-weight: 400; }
+
+  /* PHOTO EVIDENCE */
+  .photo-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #0a0a1a; border: 1px solid #2a2a4a; color: #90CAF9;
+    padding: 5px 10px; border-radius: 8px;
+    font-size: 10px; font-weight: 700;
+    cursor: pointer; margin-top: 6px;
+  }
+  .photo-thumbs { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .photo-thumb-wrap { position: relative; }
+  .photo-thumb {
+    width: 64px; height: 64px; object-fit: cover;
+    border-radius: 8px; border: 1px solid #333; cursor: pointer;
+  }
+  .photo-thumb-remove {
+    position: absolute; top: -6px; right: -6px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #B71C1C; color: #fff; font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; border: 2px solid #111;
+  }
+
+  /* INCIDENTES */
+  .incident-form {
+    background: #1a1a1a; border-radius: 10px; padding: 14px;
+    margin-bottom: 18px; border: 1px solid #333;
+  }
+  .incident-form label {
+    display: block; font-size: 10px; color: #E94560; font-weight: 700;
+    letter-spacing: 0.5px; text-transform: uppercase; margin: 10px 0 5px;
+  }
+  .incident-form label:first-child { margin-top: 0; }
+  .incident-form input[type=date],
+  .incident-form input[type=text],
+  .incident-form select,
+  .incident-form textarea {
+    width: 100%; background: #111; border: 1px solid #333; color: #eee;
+    padding: 9px 10px; border-radius: 8px; font-size: 13px; font-family: inherit;
+  }
+  .incident-form textarea { min-height: 64px; resize: vertical; }
+  .incident-save-btn {
+    display: block; width: 100%; margin-top: 14px;
+    background: linear-gradient(135deg, #E94560, #c62a3f);
+    border: none; color: #fff; padding: 12px; border-radius: 8px;
+    font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: 0.5px;
+  }
+  .incident-item {
+    background: #1a1a1a; border-radius: 10px; padding: 12px 14px;
+    margin-bottom: 10px; border-left: 3px solid #E94560;
+  }
+  .incident-item-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 4px;
+  }
+  .incident-item-type { font-size: 11px; font-weight: 800; color: #E94560; }
+  .incident-item-date { font-size: 10px; color: #888; }
+  .incident-item-desc { font-size: 12px; color: #ddd; line-height: 1.4; margin: 6px 0; }
+  .incident-item-resp { font-size: 10px; color: #90CAF9; }
+  .incident-item-del {
+    font-size: 10px; color: #666; cursor: pointer; margin-top: 8px;
+    text-decoration: underline;
+  }
+  .incident-empty { text-align: center; color: #555; font-size: 12px; padding: 30px 0; }
+  .sync-badge {
+    display: inline-block; font-size: 10px; padding: 3px 9px; border-radius: 10px;
+    margin-bottom: 12px; font-weight: 700;
+  }
+  .sync-badge.ok { background: #0d1f0d; color: #81C784; }
+  .sync-badge.off { background: #1a0a00; color: #FFB74D; }
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo-text">ímpetus<span>.</span></div>
+    <div class="date-badge" id="dateBadge"></div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span>Progreso diario</span>
+      <span id="progressText">0 / 0 tareas</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="showTab(&#39;apertura&#39;)">🔓 Apertura</div>
+    <div class="tab" onclick="showTab(&#39;limpieza&#39;)">🧹 Limpieza</div>
+    <div class="tab" onclick="showTab(&#39;banos&#39;)">🚿 Baños</div>
+    <div class="tab" onclick="showTab(&#39;operacion&#39;)">⚙️ Operación</div>
+    <div class="tab" onclick="showTab(&#39;admin&#39;)">📋 Admin</div>
+    <div class="tab" onclick="showTab(&#39;cierre&#39;)">🔒 Cierre</div>
+    <div class="tab" onclick="showTab(&#39;reunion&#39;)">📅 Reunión</div>
+    <div class="tab" onclick="showTab(&#39;incidentes&#39;)">📝 Incidentes</div>
+    <div class="tab" onclick="showTab(&#39;reporte&#39;)">📊 Reporte</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="sync-badge ok" id="syncBadge" style="display:none">☁️ Sincronizado — visible para ambos</div>
+  <div class="sync-badge off" id="syncBadgeOff" style="display:none">📴 Solo local en este dispositivo</div>
+
+  <!-- STATS -->
+  <div class="stats" id="statsBar">
+    <div class="stat-card">
+      <div class="stat-num" id="statDone">0</div>
+      <div class="stat-label">Completadas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statPend">0</div>
+      <div class="stat-label">Pendientes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statPct">0%</div>
+      <div class="stat-label">Del día</div>
+    </div>
+  </div>
+
+  <!-- Quick action buttons — always visible -->
+  <div style="display:flex;gap:8px;margin-bottom:16px;">
+    <button class="snapshot-btn" style="flex:1;margin:0;padding:11px 8px;font-size:12px;" onclick="saveSnapshot()">
+      💾 Guardar progreso de HOY
+    </button>
+    <button class="export-btn" style="flex:1;margin:0;padding:11px 8px;font-size:12px;" onclick="exportReport()">
+      📋 Exportar reporte
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════ APERTURA ══ -->
+  <div class="section active" id="sec-apertura">
+    <div class="section-header">
+      <div class="section-icon" style="background:#1a0a00;">🔓</div>
+      <div>
+        <div class="section-title">APERTURA DEL BOX</div>
+        <div class="section-sub">Mínimo 40 min antes del primer bloque</div>
+      </div>
+    </div>
+    <div class="alert">
+      <strong>⚠️ Obligatorio:</strong> Presentarse con al menos 40 minutos de anticipación al primer bloque para verificar que todo esté listo antes del ingreso de alumnos.
+    </div>
+
+    <div class="arrival-card">
+      <div class="arrival-title">📍 Registro de hora de llegada</div>
+      <button class="arrival-log-btn" onclick="logArrival()">Marcar mi llegada ahora</button>
+      <div class="arrival-status empty" id="arrivalStatus">Todavía no se ha registrado una llegada hoy</div>
+    </div>
+
+    <div class="group">
+      <div class="group-label">Ingreso y verificación</div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Llegar al box con mínimo 40 min de anticipación</div>
+          <div class="task-meta">Obligación contractual — cláusula TERCERO</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Verificar que todas las instalaciones estén limpias, ordenadas y seguras</div>
+          <div class="task-meta">Antes del ingreso de cualquier alumno</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Inspeccionar zonas de tránsito y evacuación despejadas</div>
+          <div class="task-meta">Área principal, open y ampliación</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">🚿 Limpiar y desinfectar baño de HOMBRES</div>
+          <div class="task-meta">Inodoro · lavamanos · espejo · piso · insumos — ANTES de primera clase</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">🚿 Limpiar y desinfectar baño de MUJERES</div>
+          <div class="task-meta">Inodoro · lavamanos · espejo · piso · insumos — ANTES de primera clase</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Verificar que todos los implementos estén en su lugar</div>
+          <div class="task-meta">Kettlebells, barras, discos, mancuernas, DBalls, etc.</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Revisar estado de equipos cardiovasculares</div>
+          <div class="task-meta">3 Remadoras, SkiErg, BikeErg, 2 Air Bikes — encender y verificar</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Revisar baños y verificar insumos (papel higiénico, jabón)</div>
+          <div class="task-meta">Baño hombres y mujeres</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-low"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Verificar zona de cafetería y segundo piso ordenados</div>
+          <div class="task-meta">Pasamanos, mesas, atención a clientes</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ LIMPIEZA ══ -->
+  <div class="section" id="sec-limpieza">
+    <div class="section-header">
+      <div class="section-icon" style="background:#0a1a0a;">🧹</div>
+      <div>
+        <div class="section-title">LIMPIEZA Y ASEO</div>
+        <div class="section-sub">Previa al ingreso de clientes — obligatoria diaria</div>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Área de entrenamiento</div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Barrer área principal de entrenamiento (~120 m²)</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Barrer área open (~48 m²) y ampliación (~72 m²)</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Limpiar y ordenar toda el área de entrenamiento</div>
+          <div class="task-meta">Tatamis, crashpads, cajones, bancas en su lugar</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Limpiar y desinfectar implementos deportivos</div>
+          <div class="task-meta">Kettlebells, DBalls, Wallballs, Hussaffels</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Limpiar barras, discos y mancuernas</div>
+          <div class="task-meta">Rack de barras y rack de mancuernas</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Limpiar máquinas cardiovasculares al final de cada jornada</div>
+          <div class="task-meta">Remadoras, SkiErg, BikeErg, Air Bikes, GHD</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-low"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Mantener libre de polvo las áreas comunes</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-low"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Vaciar basureros del área de entrenamiento cuando sea necesario</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Tarea semanal obligatoria</div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Sacar bolsas de basura <span class="freq-badge freq-weekly">MIÉRCOLES</span></div>
+          <div class="task-meta">Al final de la jornada del día miércoles — obligatorio</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Verificar stock de artículos de limpieza</div>
+          <div class="task-meta">Reponer si hay stock bajo</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ BAÑOS ══ -->
+  <div class="section" id="sec-banos">
+    <div class="section-header">
+      <div class="section-icon" style="background:#0a0a1a;">🚿</div>
+      <div>
+        <div class="section-title">BAÑOS</div>
+        <div class="section-sub">Hombres y Mujeres — limpieza diaria obligatoria</div>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Limpieza diaria — previo a primera clase</div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Limpiar baño de hombres (previo a primera clase)</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+          <div onclick="event.stopPropagation()">
+            <div class="photo-btn" onclick="triggerPhoto('banos_hombres')">📷 Adjuntar foto evidencia</div>
+            <input type="file" accept="image/*" capture="environment" id="photoInput_banos_hombres" style="display:none" onchange="handlePhoto(event,'banos_hombres')">
+            <div class="photo-thumbs" id="photoThumbs_banos_hombres"></div>
+          </div>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Limpiar baño de mujeres (previo a primera clase)</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+          <div onclick="event.stopPropagation()">
+            <div class="photo-btn" onclick="triggerPhoto('banos_mujeres')">📷 Adjuntar foto evidencia</div>
+            <input type="file" accept="image/*" capture="environment" id="photoInput_banos_mujeres" style="display:none" onchange="handlePhoto(event,'banos_mujeres')">
+            <div class="photo-thumbs" id="photoThumbs_banos_mujeres"></div>
+          </div>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Trapear pisos de ambos baños con limpia piso</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Desinfectar inodoros, lavamanos y espejos</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Verificar disponibilidad de papel higiénico en ambos baños</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Verificar jabón disponible en lavamanos</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Vaciar basureros de baños cuando sea necesario</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Informar inmediatamente cualquier desperfecto sanitario</div>
+          <div class="task-meta">Cañerías, filtraciones, artefactos dañados</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ OPERACIÓN ══ -->
+  <div class="section" id="sec-operacion">
+    <div class="section-header">
+      <div class="section-icon" style="background:#1a0a1a;">⚙️</div>
+      <div>
+        <div class="section-title">OPERACIÓN Y CLASES</div>
+        <div class="section-sub">Durante el funcionamiento del box</div>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Antes de cada clase</div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Preparar y organizar el material para la clase</div>
+          <div class="task-meta">Según planificación del día</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DE LA CLASE</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Verificar capacidad máxima (máx. 12 alumnos por bloque)</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DE LA CLASE</span>
+        </div>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Durante la clase</div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Velar por la seguridad de todos los asistentes</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DE LA CLASE</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Supervisar uso correcto de implementos y corregir técnica</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DE LA CLASE</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Modificar entrenamiento para alumnos con dolor, molestia o lesión</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DE LA CLASE</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Corregir conductas riesgosas y mantener ambiente de respeto</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DE LA CLASE</span>
+        </div>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Después de cada clase</div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Supervisar que los alumnos ordenen el material utilizado</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DE LA CLASE</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Verificar que los alumnos boten su basura en basureros</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DE LA CLASE</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Inspeccionar equipamiento al final de cada jornada</div>
+          <div class="task-meta">Reportar cualquier daño o anomalía</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Mantención — Revisión periódica</div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Informar inmediatamente situaciones de riesgo para alumnos o infraestructura</div>
+          <div class="task-meta">Seguridad estructural, electricidad, agua, accesos</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Coordinar reparación de desperfectos menores</div>
+          <div class="task-meta">Dentro de los plazos acordados — incumplimiento = descuento 10%</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ ADMIN ══ -->
+  <div class="section" id="sec-admin">
+    <div class="section-header">
+      <div class="section-icon" style="background:#1a1000;">📋</div>
+      <div>
+        <div class="section-title">ADMINISTRACIÓN</div>
+        <div class="section-sub">Gestión diaria y comunicación</div>
+      </div>
+    </div>
+    <div class="alert">
+      <strong>⏱️ Plazo máximo 2 horas:</strong> Gestionar pagos, cobros y activación de planes. Responder mensajes de WhatsApp e Instagram durante horario de funcionamiento.
+    </div>
+    <div class="group">
+      <div class="group-label">Tareas diarias</div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Gestionar pagos, cobros y activación de planes de alumnos</div>
+          <div class="task-meta">Plazo máximo: 2 horas desde la solicitud</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Responder mensajes de WhatsApp e Instagram</div>
+          <div class="task-meta">Plazo máximo: 2 horas en horario de funcionamiento</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Registrar ingresos y gastos del día</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Actualizar base de datos de alumnos si hay cambios</div>
+          <div class="task-meta">Nuevos ingresos, renovaciones o abandonos</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Informar al socio sobre renovaciones o abandonos de alumnos</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Registrar reclamos, sugerencias o molestias de alumnos</div>
+          <div class="task-meta">Comunicar al socio para gestión conjunta</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Tareas mensuales</div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Informar estado financiero mensual <span class="freq-badge freq-monthly">MENSUAL</span></div>
+          <div class="task-meta">Ingresos, gastos, utilidades del mes</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Reunión mensual de coordinación <span class="freq-badge freq-monthly">MENSUAL</span></div>
+          <div class="task-meta">Al menos 1 vez al mes — ver pestaña Reunión</div>
+          <span class="resp-tag resp-both">AMBOS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ CIERRE ══ -->
+  <div class="section" id="sec-cierre">
+    <div class="section-header">
+      <div class="section-icon" style="background:#1a0000;">🔒</div>
+      <div>
+        <div class="section-title">CIERRE DEL BOX</div>
+        <div class="section-sub">Al finalizar la última clase del día</div>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Limpieza y orden final</div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Limpiar máquinas cardiovasculares al finalizar la jornada</div>
+          <div class="task-meta">Remadoras, SkiErg, BikeErg, Air Bikes, GHD</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Verificar que todos los implementos estén en su lugar</div>
+          <div class="task-meta">Racks ordenados, discos en orden, kettlebells en lugar</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Barrer y dejar área de entrenamiento lista para el día siguiente</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Revisar y vaciar basureros si es necesario</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Dejar baños limpios y con insumos para el día siguiente</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Seguridad y cierre</div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Verificar que no queden alumnos en el recinto</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Apagar luces y equipos eléctricos</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Cerrar accesos y perímetro del box con llave</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body">
+          <div class="task-text">Informar al socio si hubo incidentes, anomalías o daños durante el día</div>
+          <span class="resp-tag resp-encargado">ENCARGADO DEL TURNO</span>
+        </div>
+      </div>
+    </div>
+    <button class="reset-btn" onclick="resetAll()">🔄 Reiniciar checklist del día</button>
+  </div>
+
+  <!-- ═══════════════════════════════════ REUNIÓN ══ -->
+  <div class="section" id="sec-reunion">
+    <div class="section-header">
+      <div class="section-icon" style="background:#0a001a;">📅</div>
+      <div>
+        <div class="section-title">REUNIÓN MENSUAL</div>
+        <div class="section-sub">Al menos 1 vez al mes — obligatoria entre socios</div>
+      </div>
+    </div>
+    <div class="alert">
+      <strong>📌 Cláusula NOVENO:</strong> Reunión formal obligatoria mínimo una vez al mes para revisión integral del box.
+    </div>
+
+    <div class="reunion-card">
+      <h4>📊 Estado Financiero</h4>
+      <ul>
+        <li>Revisar ingresos y gastos del mes</li>
+        <li>Presentar utilidades y distribución</li>
+        <li>Planificar inversiones pendientes</li>
+      </ul>
+    </div>
+    <div class="reunion-card">
+      <h4>⚙️ Funcionamiento Operativo</h4>
+      <ul>
+        <li>Evaluar el funcionamiento general del box</li>
+        <li>Revisar incidentes, reclamos o sugerencias recibidas</li>
+        <li>Estado de mantenciones pendientes o realizadas</li>
+      </ul>
+    </div>
+    <div class="reunion-card">
+      <h4>📅 Planificación</h4>
+      <ul>
+        <li>Planificar actividades y eventos del próximo mes</li>
+        <li>Asignación de tareas y compromisos entre socios</li>
+        <li>Definir mejoras para el box</li>
+      </ul>
+    </div>
+    <div class="reunion-card">
+      <h4>🤝 Resolución de Conflictos</h4>
+      <ul>
+        <li>Resolver situaciones pendientes entre socios</li>
+        <li>Revisar incumplimientos (si los hay) y medidas correctivas</li>
+        <li>Recordar: incumplimiento grave = descuento 10% remuneración</li>
+      </ul>
+    </div>
+
+    <div class="group" style="margin-top:20px;">
+      <div class="group-label">Checklist de la reunión</div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body"><div class="task-text">Revisión estado financiero del mes</div></div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-high"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body"><div class="task-text">Evaluación funcionamiento operativo</div></div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body"><div class="task-text">Planificación de inversiones</div></div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body"><div class="task-text">Planificación de actividades del próximo mes</div></div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-med"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body"><div class="task-text">Asignación de tareas y compromisos</div></div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-low"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body"><div class="task-text">Resolución de conflictos pendientes</div></div>
+      </div>
+      <div class="task" onclick="toggleTask(this)">
+        <div class="priority-dot p-low"></div>
+        <div class="checkbox"><span class="checkbox-check">✓</span></div>
+        <div class="task-body"><div class="task-text">Definición de mejoras para el box</div></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════ INCIDENTES ══ -->
+  <div class="section" id="sec-incidentes">
+    <div class="section-header">
+      <div class="section-icon" style="background:#1a0a00;">📝</div>
+      <div>
+        <div class="section-title">REGISTRO DE INCIDENTES</div>
+        <div class="section-sub">Antecedentes con fecha y evidencia — llegadas atrasadas, aseo, otros</div>
+      </div>
+    </div>
+    <div class="alert">
+      <strong>💡 Para qué sirve:</strong> deja constancia con fecha, descripción y foto de situaciones puntuales (tardanzas, aseo deficiente, incumplimientos). Sirve como respaldo objetivo para conversaciones y acuerdos entre socios.
+    </div>
+
+    <div class="incident-form">
+      <label>Fecha del incidente</label>
+      <input type="date" id="incFecha">
+
+      <label>Tipo</label>
+      <select id="incTipo">
+        <option value="Llegada atrasada">Llegada atrasada</option>
+        <option value="Aseo deficiente">Aseo deficiente</option>
+        <option value="Mensajes sin responder">Mensajes sin responder</option>
+        <option value="Tarea administrativa pendiente">Tarea administrativa pendiente</option>
+        <option value="Otro">Otro</option>
+      </select>
+
+      <label>Responsable</label>
+      <select id="incResp">
+        <option value="Socio A">Socio A</option>
+        <option value="Socio B">Socio B</option>
+        <option value="Ambos">Ambos</option>
+      </select>
+
+      <label>Descripción</label>
+      <textarea id="incDesc" placeholder="Ej: llegó 25 min tarde para la clase de 07:00, alumnos esperando afuera."></textarea>
+
+      <label>Foto (opcional)</label>
+      <div class="photo-btn" onclick="document.getElementById('incPhotoInput').click()">📷 Adjuntar foto</div>
+      <input type="file" accept="image/*" capture="environment" id="incPhotoInput" style="display:none" onchange="handleIncidentPhoto(event)">
+      <div class="photo-thumbs" id="incPhotoPreview"></div>
+
+      <button class="incident-save-btn" onclick="saveIncidente()">Guardar incidente</button>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <button class="export-btn" style="flex:1;margin:0;" onclick="exportIncidentes()">📋 Exportar lista</button>
+    </div>
+
+    <div id="incidentesList"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════ REPORTE ══ -->
+  <div class="section" id="sec-reporte">
+    <div class="section-header">
+      <div class="section-icon" style="background:#1a0a1a;">📊</div>
+      <div>
+        <div class="section-title">REPORTE OPERATIVO</div>
+        <div class="section-sub">Historial diario — para reunión mensual</div>
+      </div>
+    </div>
+
+    <!-- Resumen del mes -->
+    <div class="report-summary" id="reportSummary">
+      <div class="summary-card">
+        <div class="s-num" id="rDaysReg">0</div>
+        <div class="s-lbl">Días registrados</div>
+        <div class="s-sub" id="rDaysTotal">de 0 días hábiles</div>
+      </div>
+      <div class="summary-card">
+        <div class="s-num" id="rAvgPct">—</div>
+        <div class="s-lbl">Cumplimiento promedio</div>
+        <div class="s-sub" id="rBestDay">Mejor día: —</div>
+      </div>
+      <div class="summary-card">
+        <div class="s-num" id="rPct100">0</div>
+        <div class="s-lbl">Días al 100%</div>
+        <div class="s-sub">Excelente operación</div>
+      </div>
+      <div class="summary-card">
+        <div class="s-num" id="rPctLow">0</div>
+        <div class="s-lbl">Días bajo 70%</div>
+        <div class="s-sub">Requieren atención</div>
+      </div>
+    </div>
+
+    <!-- Leyenda -->
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-dot" style="background:#1B5E20"></div>100%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#2E7D32"></div>70-99%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#E65100"></div>40-69%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#B71C1C"></div>&lt;40%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#1a1a1a"></div>Sin datos</div>
+    </div>
+
+    <!-- Navegación de mes -->
+    <div class="month-nav">
+      <button class="month-nav-btn" onclick="changeMonth(-1)">‹</button>
+      <div class="month-label" id="monthLabel"></div>
+      <button class="month-nav-btn" onclick="changeMonth(1)">›</button>
+    </div>
+
+    <!-- Cabeceras días de semana -->
+    <div class="report-grid" id="calHeader">
+      <div class="day-col"><div class="day-col-header">LUN</div></div>
+      <div class="day-col"><div class="day-col-header">MAR</div></div>
+      <div class="day-col"><div class="day-col-header">MIÉ</div></div>
+      <div class="day-col"><div class="day-col-header">JUE</div></div>
+      <div class="day-col"><div class="day-col-header">VIE</div></div>
+      <div class="day-col"><div class="day-col-header">SÁB</div></div>
+      <div class="day-col"><div class="day-col-header">DOM</div></div>
+    </div>
+
+    <!-- Calendario dinámico -->
+    <div id="calBody"></div>
+
+    <!-- Acciones -->
+    <button class="export-btn" onclick="clearMonthData()">
+      🗑️ Borrar datos del mes actual
+    </button>
+  </div>
+
+  <!-- POPUP DETALLE DÍA -->
+  <div class="detail-popup" id="detailPopup" onclick="closeDetail(event)">
+    <div class="detail-inner">
+      <h3 id="detailTitle">Detalle del día</h3>
+      <p id="detailDate"></p>
+      <div class="detail-bar-wrap">
+        <div class="detail-bar-fill" id="detailBar"></div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title">Progreso por sección</div>
+        <div id="detailRows"></div>
+      </div>
+      <button class="detail-close" onclick="document.getElementById(&#39;detailPopup&#39;).classList.remove(&#39;open&#39;)">Cerrar</button>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<script>
+// ══════════════════════════════════════════════════════
+// CONFIGURACIÓN — pega aquí la URL de tu Google Apps Script
+// (instrucciones para obtenerla al final de este archivo, o pídeselas a Claude)
+// ══════════════════════════════════════════════════════
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_0EuYzNJNfAO4VIWi6tBxakUq12Bb0okSdizNJAxPdtTL8XDUXUsRixz6JcuVN8B6/exec';
+const CLOUD_ENABLED = APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'PEGA_AQUI_TU_URL_DE_APPS_SCRIPT';
+
+// Wrapper simple tipo "storage" respaldado por Google Sheets vía Apps Script.
+// GET  -> { value: "<json string>" } | null
+// POST -> guarda { key, value } como texto plano (evita el preflight CORS de Apps Script)
+async function cloudGet(key) {
+  if (!CLOUD_ENABLED) return null;
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + '?key=' + encodeURIComponent(key));
+    const json = await res.json();
+    return (json && json.ok && json.value != null) ? { value: json.value } : null;
+  } catch(e) { return null; }
+}
+
+async function cloudSet(key, value) {
+  if (!CLOUD_ENABLED) return null;
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ key, value }),
+    });
+    const json = await res.json();
+    return (json && json.ok) ? { key, value } : null;
+  } catch(e) { return null; }
+}
+
+// ── Date / month helpers ───────────────────────────────────────────
+const days       = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const months     = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const monthsFull = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto',
+                    'Septiembre','Octubre','Noviembre','Diciembre'];
+const now = new Date();
+document.getElementById('dateBadge').textContent =
+  days[now.getDay()] + ' ' + now.getDate() + ' ' + months[now.getMonth()];
+
+function getDateKey(d) {
+  d = d || new Date();
+  return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+}
+function getMonthKey(y, m) { return y + '-' + (m+1); }
+
+// ── Sections map ───────────────────────────────────────────────────
+const SECTIONS = {
+  apertura:'Apertura', limpieza:'Limpieza', banos:'Baños',
+  operacion:'Operación', admin:'Admin', cierre:'Cierre', reunion:'Reunión',
+};
+
+function getSecStats() {
+  const result = {};
+  for (const id of Object.keys(SECTIONS)) {
+    const sec = document.getElementById('sec-' + id);
+    if (!sec) continue;
+    result[id] = {
+      total: sec.querySelectorAll('.task').length,
+      done:  sec.querySelectorAll('.task.done').length,
+    };
+  }
+  return result;
+}
+
+// ── Stats bar ──────────────────────────────────────────────────────
+function updateStats() {
+  const total     = document.querySelectorAll('.task').length;
+  const completed = document.querySelectorAll('.task.done').length;
+  const pct = total ? Math.round((completed / total) * 100) : 0;
+  document.getElementById('statDone').textContent = completed;
+  document.getElementById('statPend').textContent = total - completed;
+  document.getElementById('statPct').textContent  = pct + '%';
+  document.getElementById('progressText').textContent = completed + ' / ' + total + ' tareas';
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// ── Tab switching ──────────────────────────────────────────────────
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  event.target.classList.add('active');
+  updateStats();
+  if (id === 'reporte') renderCalendar();
+}
+
+// ── Toggle task ────────────────────────────────────────────────────
+function toggleTask(el) {
+  el.classList.toggle('done');
+  saveLocalState();
+  updateStats();
+}
+
+// ── Toast ──────────────────────────────────────────────────────────
+function showToast(msg, color) {
+  color = color || '#E94560';
+  let t = document.getElementById('toastMsg');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toastMsg';
+    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);' +
+      'color:#fff;padding:10px 20px;border-radius:20px;font-size:12px;font-weight:700;' +
+      'z-index:9999;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.5);' +
+      'transition:opacity 0.4s;pointer-events:none;';
+    document.body.appendChild(t);
+  }
+  t.style.background = color;
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3500);
+}
+
+// ── Local persistence (progreso del día actual) ────────────────────
+function saveLocalState() {
+  const tasks = document.querySelectorAll('.task');
+  const state = {};
+  tasks.forEach((t, i) => { state['t'+i] = t.classList.contains('done'); });
+  try { localStorage.setItem('impetus_day_' + getDateKey(), JSON.stringify(state)); } catch(e){}
+}
+
+function loadLocalState() {
+  try {
+    const raw = localStorage.getItem('impetus_day_' + getDateKey());
+    if (!raw) return;
+    const state = JSON.parse(raw);
+    document.querySelectorAll('.task').forEach((t, i) => {
+      if (state['t'+i]) t.classList.add('done');
+    });
+  } catch(e){}
+}
+
+function resetAll() {
+  if (!confirm('¿Reiniciar todas las tareas del día?')) return;
+  document.querySelectorAll('.task').forEach(t => t.classList.remove('done'));
+  try { localStorage.removeItem('impetus_day_' + getDateKey()); } catch(e){}
+  updateStats();
+}
+
+// ── CLOUD: guardar snapshot ────────────────────────────────────────
+async function saveSnapshot() {
+  const total     = document.querySelectorAll('.task').length;
+  const completed = document.querySelectorAll('.task.done').length;
+  const pct       = total ? Math.round((completed / total) * 100) : 0;
+  const today     = new Date();
+  const savedBy   = localStorage.getItem('impetus_user') || askUser();
+
+  const snap = {
+    date:      getDateKey(today),
+    label:     days[today.getDay()] + ' ' + today.getDate() + ' ' + monthsFull[today.getMonth()],
+    total, completed, pct,
+    sections:  getSecStats(),
+    savedAt:   today.toLocaleTimeString('es-CL', {hour:'2-digit', minute:'2-digit'}),
+    savedBy,
+  };
+
+  // Guardar siempre en local como respaldo
+  const mKey = 'impetus_month_' + getMonthKey(today.getFullYear(), today.getMonth());
+  let localHistory = {};
+  try { localHistory = JSON.parse(localStorage.getItem(mKey) || '{}'); } catch(e){}
+  localHistory[snap.date] = snap;
+  try { localStorage.setItem(mKey, JSON.stringify(localHistory)); } catch(e){}
+
+  // Guardar en la nube (visible para ambos al abrir este mismo link)
+  if (!CLOUD_ENABLED) {
+    showToast('✅ Guardado local (' + pct + '%)', '#E65100');
+    renderCalendar();
+    return;
+  }
+
+  showToast('☁️ Guardando en la nube…', '#0F3460');
+  try {
+    const cloudKey = 'mes_' + mKey;
+    let cloudHistory = {};
+    try {
+      const existing = await cloudGet(cloudKey);
+      if (existing && existing.value) cloudHistory = JSON.parse(existing.value);
+    } catch(e) { /* clave no existe aun */ }
+    cloudHistory[snap.date] = snap;
+    await cloudSet(cloudKey, JSON.stringify(cloudHistory));
+    showToast('✅ ' + snap.label + ' guardado en la nube (' + pct + '%)', '#2E7D32');
+    renderCalendar();
+  } catch(err) {
+    showToast('⚠️ Guardado local (error de nube)', '#E65100');
+    renderCalendar();
+  }
+}
+
+function askUser() {
+  const name = prompt('¿Quién eres? (escribe tu nombre o iniciales)') || 'Socio';
+  localStorage.setItem('impetus_user', name);
+  return name;
+}
+
+// ── CLOUD: cargar historial del mes ───────────────────────────────
+async function fetchCloudHistory(year, month) {
+  if (!CLOUD_ENABLED) return null;
+  try {
+    const cloudKey = 'mes_' + getMonthKey(year, month);
+    const existing = await cloudGet(cloudKey);
+    return existing && existing.value ? JSON.parse(existing.value) : null;
+  } catch(e) { return null; }
+}
+
+// ── Calendar ───────────────────────────────────────────────────────
+let calYear  = now.getFullYear();
+let calMonth = now.getMonth();
+let calData  = {};   // merged local + cloud
+
+function changeMonth(dir) {
+  calMonth += dir;
+  if (calMonth < 0)  { calMonth = 11; calYear--; }
+  if (calMonth > 11) { calMonth = 0;  calYear++; }
+  renderCalendar();
+}
+
+async function renderCalendar() {
+  document.getElementById('monthLabel').textContent = monthsFull[calMonth] + ' ' + calYear;
+
+  // Local data
+  const mKey = 'impetus_month_' + getMonthKey(calYear, calMonth);
+  let local = {};
+  try { local = JSON.parse(localStorage.getItem(mKey) || '{}'); } catch(e){}
+
+  // Cloud data (async, update when ready)
+  calData = { ...local };
+  buildCalendarDOM(calData);
+
+  const cloud = await fetchCloudHistory(calYear, calMonth);
+  if (cloud) {
+    calData = { ...local, ...cloud };   // cloud wins on conflict
+    buildCalendarDOM(calData);
+    // Merge back to local
+    try { localStorage.setItem(mKey, JSON.stringify(calData)); } catch(e){}
+  }
+}
+
+function buildCalendarDOM(history) {
+  const firstDay  = new Date(calYear, calMonth, 1);
+  const lastDay   = new Date(calYear, calMonth + 1, 0);
+  let   startDow  = firstDay.getDay();
+  startDow = (startDow === 0) ? 6 : startDow - 1;
+
+  const totalDays = lastDay.getDate();
+  const cells = [];
+  for (let i = 0; i < startDow; i++) cells.push(null);
+  for (let d = 1; d <= totalDays; d++) cells.push(d);
+
+  const weeks = [];
+  for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i+7));
+
+  // Summary stats
+  const snaps  = Object.values(history);
+  const avg    = snaps.length ? Math.round(snaps.reduce((a,s) => a+s.pct, 0)/snaps.length) : null;
+  const best   = snaps.length ? snaps.reduce((a,s) => s.pct > a.pct ? s : a, snaps[0]) : null;
+  const cnt100 = snaps.filter(s => s.pct === 100).length;
+  const cntLow = snaps.filter(s => s.pct < 70).length;
+
+  document.getElementById('rDaysReg').textContent   = snaps.length;
+  document.getElementById('rDaysTotal').textContent = 'de ' + totalDays + ' días del mes';
+  document.getElementById('rAvgPct').textContent    = avg !== null ? avg + '%' : '—';
+  document.getElementById('rBestDay').textContent   = best
+    ? 'Mejor: ' + best.label.split(' ')[0] + ' ' + best.label.split(' ')[1] + ' (' + best.pct + '%)'
+    : 'Mejor día: —';
+  document.getElementById('rPct100').textContent = cnt100;
+  document.getElementById('rPctLow').textContent = cntLow;
+
+  // Render weeks
+  const body = document.getElementById('calBody');
+  body.innerHTML = '';
+  weeks.forEach(week => {
+    while (week.length < 7) week.push(null);
+    const row = document.createElement('div');
+    row.className = 'report-grid';
+    row.style.marginBottom = '3px';
+
+    week.forEach(dayNum => {
+      const col  = document.createElement('div');
+      col.className = 'day-col';
+      const cell = document.createElement('div');
+
+      if (dayNum === null) {
+        cell.className = 'day-cell empty';
+      } else {
+        const dKey    = calYear + '-' + (calMonth+1) + '-' + dayNum;
+        const snap    = history[dKey];
+        const isToday = calYear === now.getFullYear() && calMonth === now.getMonth() && dayNum === now.getDate();
+
+        if (snap) {
+          const p = snap.pct;
+          cell.className = 'day-cell ' + (p===100?'pct-100':p>=70?'pct-high':p>=40?'pct-mid':'pct-low');
+          cell.innerHTML = '<span class="cell-date">' + dayNum + '</span>'
+            + '<span class="cell-pct">' + p + '%</span>'
+            + (snap.savedBy ? '<span class="cell-dot" style="font-size:7px;opacity:0.7">' + snap.savedBy.slice(0,3) + '</span>' : '');
+          cell.onclick = () => showDetail(snap);
+        } else {
+          cell.className = 'day-cell no-data';
+          cell.innerHTML = '<span class="cell-date" style="color:' + (isToday?'#E94560':'#444') + '">'
+            + dayNum + '</span><span class="cell-dot">·</span>';
+        }
+        if (isToday) cell.style.outline = '2px solid #E94560';
+      }
+      col.appendChild(cell);
+      row.appendChild(col);
+    });
+    body.appendChild(row);
+  });
+}
+
+// ── Day detail popup ───────────────────────────────────────────────
+function showDetail(snap) {
+  document.getElementById('detailTitle').textContent = snap.label;
+  document.getElementById('detailDate').textContent  =
+    'Guardado a las ' + snap.savedAt +
+    (snap.savedBy ? ' por ' + snap.savedBy : '') +
+    ' · ' + snap.completed + '/' + snap.total + ' tareas';
+  document.getElementById('detailBar').style.width = snap.pct + '%';
+
+  const rows = document.getElementById('detailRows');
+  rows.innerHTML = '';
+  if (snap.sections) {
+    for (const [id, s] of Object.entries(snap.sections)) {
+      if (!s.total) continue;
+      const p    = Math.round((s.done / s.total) * 100);
+      const name = SECTIONS[id] || id;
+      const row  = document.createElement('div');
+      row.className = 'detail-row';
+      row.innerHTML = '<span>' + name + '</span><span style="color:'
+        + (p===100?'#81C784':p>=70?'#FFD54F':'#EF9A9A') + '">'
+        + s.done + '/' + s.total + ' (' + p + '%)</span>';
+      rows.appendChild(row);
+    }
+  }
+  document.getElementById('detailPopup').classList.add('open');
+}
+
+function closeDetail(e) {
+  if (e.target.id === 'detailPopup') document.getElementById('detailPopup').classList.remove('open');
+}
+
+// ── Export text report ─────────────────────────────────────────────
+function exportReport() {
+  const snaps = Object.values(calData).sort((a,b) => a.date.localeCompare(b.date));
+  if (!snaps.length) { showToast('⚠️ No hay datos para este mes'); return; }
+
+  const avg = Math.round(snaps.reduce((a,s) => a+s.pct, 0)/snaps.length);
+  let txt = '📊 REPORTE OPERATIVO — ÍMPETUS BOX\n'
+    + monthsFull[calMonth] + ' ' + calYear + '\n'
+    + '================================\n\n'
+    + 'PROMEDIO CUMPLIMIENTO: ' + avg + '%\n'
+    + 'DÍAS REGISTRADOS: ' + snaps.length + '\n\n'
+    + 'DETALLE POR DÍA:\n';
+
+  snaps.forEach(s => {
+    const bar = '█'.repeat(Math.round(s.pct/10)) + '░'.repeat(10-Math.round(s.pct/10));
+    txt += s.label + (s.savedBy?' ('+s.savedBy+')':'') + ': ' + bar + ' ' + s.pct + '%\n';
+    if (s.sections) {
+      for (const [id, sec] of Object.entries(s.sections)) {
+        if (!sec.total) continue;
+        const p = Math.round((sec.done/sec.total)*100);
+        txt += '  · ' + (SECTIONS[id]||id) + ': ' + sec.done + '/' + sec.total + ' (' + p + '%)\n';
+      }
+    }
+    txt += '\n';
+  });
+  txt += '================================\n'
+    + 'Generado el ' + now.toLocaleDateString('es-CL');
+
+  try {
+    navigator.clipboard.writeText(txt).then(() => showToast('📋 Reporte copiado — pégalo en WhatsApp', '#2E7D32'));
+  } catch(e) {
+    const ta = document.createElement('textarea');
+    ta.value = txt; ta.style.cssText = 'position:fixed;opacity:0;';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('📋 Reporte copiado — pégalo en WhatsApp', '#2E7D32');
+  }
+}
+
+// ── Clear month ────────────────────────────────────────────────────
+function clearMonthData() {
+  if (!confirm('¿Borrar todos los datos locales de ' + monthsFull[calMonth] + ' ' + calYear + '?')) return;
+  const mKey = 'impetus_month_' + getMonthKey(calYear, calMonth);
+  try { localStorage.removeItem(mKey); } catch(e){}
+  calData = {};
+  renderCalendar();
+  showToast('🗑️ Datos del mes borrados localmente');
+}
+
+// ══════════════════════════════════════════════════════
+// REGISTRO DE LLEGADA
+// ══════════════════════════════════════════════════════
+function arrivalKey(d) { return 'llegadas_' + getDateKey(d); }
+
+async function logArrival() {
+  const name = localStorage.getItem('impetus_user') || askUser();
+  const now2 = new Date();
+  const entry = {
+    name,
+    time: now2.toLocaleTimeString('es-CL', {hour:'2-digit', minute:'2-digit'}),
+    iso: now2.toISOString(),
+  };
+  const key = arrivalKey();
+  try { localStorage.setItem('local_' + key, JSON.stringify(entry)); } catch(e){}
+  renderArrivalStatus(entry);
+  if (!CLOUD_ENABLED) { showToast('✅ Llegada registrada localmente'); return; }
+  try {
+    await cloudSet(key, JSON.stringify(entry));
+    showToast('✅ Llegada de ' + name + ' registrada: ' + entry.time, '#2E7D32');
+  } catch(e) {
+    showToast('⚠️ Registrado local (error de nube)', '#E65100');
+  }
+}
+
+function renderArrivalStatus(entry) {
+  const el = document.getElementById('arrivalStatus');
+  if (!entry) { el.textContent = 'Todavía no se ha registrado una llegada hoy'; el.classList.add('empty'); return; }
+  el.classList.remove('empty');
+  el.textContent = '✓ ' + entry.name + ' marcó llegada a las ' + entry.time;
+}
+
+async function loadArrivalToday() {
+  const key = arrivalKey();
+  if (CLOUD_ENABLED) {
+    try {
+      const res = await cloudGet(key);
+      if (res && res.value) { renderArrivalStatus(JSON.parse(res.value)); return; }
+    } catch(e){}
+  }
+  try {
+    const raw = localStorage.getItem('local_' + key);
+    if (raw) renderArrivalStatus(JSON.parse(raw));
+  } catch(e){}
+}
+
+// ══════════════════════════════════════════════════════
+// FOTOS DE EVIDENCIA (baños)
+// ══════════════════════════════════════════════════════
+function photosKey(d) { return 'fotos_' + getDateKey(d); }
+
+function compressImageFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxW = 800;
+        const scale = Math.min(1, maxW / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', 0.6));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function triggerPhoto(taskKey) {
+  document.getElementById('photoInput_' + taskKey).click();
+}
+
+async function handlePhoto(event, taskKey) {
+  const file = event.target.files[0];
+  if (!file) return;
+  showToast('📷 Procesando foto…', '#0F3460');
+  try {
+    const dataUrl = await compressImageFile(file);
+    const name = localStorage.getItem('impetus_user') || askUser();
+    const key = photosKey();
+    let dayPhotos = {};
+    if (CLOUD_ENABLED) {
+      try {
+        const res = await cloudGet(key);
+        if (res && res.value) dayPhotos = JSON.parse(res.value);
+      } catch(e){}
+    }
+    if (!dayPhotos[taskKey]) dayPhotos[taskKey] = [];
+    dayPhotos[taskKey].push({ dataUrl, by: name, at: new Date().toLocaleTimeString('es-CL', {hour:'2-digit', minute:'2-digit'}) });
+    if (CLOUD_ENABLED) {
+      try { await cloudSet(key, JSON.stringify(dayPhotos)); } catch(e){}
+    }
+    try { localStorage.setItem('local_' + key, JSON.stringify(dayPhotos)); } catch(e){}
+    renderPhotoThumbs(taskKey, dayPhotos[taskKey]);
+    showToast('✅ Foto adjuntada', '#2E7D32');
+  } catch(e) {
+    showToast('⚠️ No se pudo procesar la foto', '#E65100');
+  }
+  event.target.value = '';
+}
+
+function renderPhotoThumbs(taskKey, list) {
+  const container = document.getElementById('photoThumbs_' + taskKey);
+  if (!container) return;
+  container.innerHTML = '';
+  (list || []).forEach((p, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'photo-thumb-wrap';
+    wrap.innerHTML = '<img class="photo-thumb" src="' + p.dataUrl + '" onclick="window.open(this.src)">'
+      + '<div class="photo-thumb-remove" onclick="removePhoto(&#39;' + taskKey + '&#39;,' + i + ')">✕</div>';
+    container.appendChild(wrap);
+  });
+}
+
+async function removePhoto(taskKey, index) {
+  const key = photosKey();
+  let dayPhotos = {};
+  try {
+    if (CLOUD_ENABLED) {
+      const res = await cloudGet(key);
+      if (res && res.value) dayPhotos = JSON.parse(res.value);
+    } else {
+      dayPhotos = JSON.parse(localStorage.getItem('local_' + key) || '{}');
+    }
+  } catch(e){}
+  if (dayPhotos[taskKey]) dayPhotos[taskKey].splice(index, 1);
+  if (CLOUD_ENABLED) { try { await cloudSet(key, JSON.stringify(dayPhotos)); } catch(e){} }
+  try { localStorage.setItem('local_' + key, JSON.stringify(dayPhotos)); } catch(e){}
+  renderPhotoThumbs(taskKey, dayPhotos[taskKey]);
+}
+
+async function loadPhotosToday() {
+  const key = photosKey();
+  let dayPhotos = null;
+  if (CLOUD_ENABLED) {
+    try {
+      const res = await cloudGet(key);
+      if (res && res.value) dayPhotos = JSON.parse(res.value);
+    } catch(e){}
+  }
+  if (!dayPhotos) {
+    try { dayPhotos = JSON.parse(localStorage.getItem('local_' + key) || '{}'); } catch(e){ dayPhotos = {}; }
+  }
+  renderPhotoThumbs('banos_hombres', dayPhotos.banos_hombres);
+  renderPhotoThumbs('banos_mujeres', dayPhotos.banos_mujeres);
+}
+
+// ══════════════════════════════════════════════════════
+// INCIDENTES (antecedentes con fecha, descripción y foto)
+// ══════════════════════════════════════════════════════
+const INC_KEY = 'incidentes_registro';
+let currentIncidentPhoto = null;
+
+document.getElementById('incFecha').valueAsDate = new Date();
+
+async function handleIncidentPhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  try {
+    currentIncidentPhoto = await compressImageFile(file);
+    const prev = document.getElementById('incPhotoPreview');
+    prev.innerHTML = '<div class="photo-thumb-wrap"><img class="photo-thumb" src="' + currentIncidentPhoto + '"></div>';
+  } catch(e) {
+    showToast('⚠️ No se pudo procesar la foto', '#E65100');
+  }
+}
+
+async function loadIncidentes() {
+  let list = [];
+  if (CLOUD_ENABLED) {
+    try {
+      const res = await cloudGet(INC_KEY);
+      if (res && res.value) list = JSON.parse(res.value);
+    } catch(e){}
+  }
+  if (!list.length) {
+    try { list = JSON.parse(localStorage.getItem('local_' + INC_KEY) || '[]'); } catch(e){ list = []; }
+  }
+  renderIncidentes(list);
+  return list;
+}
+
+async function saveIncidente() {
+  const fecha = document.getElementById('incFecha').value;
+  const tipo  = document.getElementById('incTipo').value;
+  const resp  = document.getElementById('incResp').value;
+  const desc  = document.getElementById('incDesc').value.trim();
+  if (!fecha || !desc) { showToast('⚠️ Completa fecha y descripción', '#E65100'); return; }
+
+  const name = localStorage.getItem('impetus_user') || askUser();
+  const entry = {
+    id: Date.now().toString(36),
+    fecha, tipo, resp, desc,
+    photo: currentIncidentPhoto,
+    createdAt: new Date().toLocaleString('es-CL'),
+    createdBy: name,
+  };
+
+  let list = await loadIncidentes();
+  list.unshift(entry);
+
+  try { localStorage.setItem('local_' + INC_KEY, JSON.stringify(list)); } catch(e){}
+  if (CLOUD_ENABLED) {
+    try { await cloudSet(INC_KEY, JSON.stringify(list)); showToast('✅ Incidente guardado en la nube', '#2E7D32'); }
+    catch(e) { showToast('⚠️ Guardado local (error de nube)', '#E65100'); }
+  } else {
+    showToast('✅ Incidente guardado localmente');
+  }
+
+  document.getElementById('incDesc').value = '';
+  document.getElementById('incPhotoPreview').innerHTML = '';
+  currentIncidentPhoto = null;
+  renderIncidentes(list);
+}
+
+async function deleteIncidente(id) {
+  if (!confirm('¿Eliminar este incidente?')) return;
+  let list = await loadIncidentes();
+  list = list.filter(i => i.id !== id);
+  try { localStorage.setItem('local_' + INC_KEY, JSON.stringify(list)); } catch(e){}
+  if (CLOUD_ENABLED) { try { await cloudSet(INC_KEY, JSON.stringify(list)); } catch(e){} }
+  renderIncidentes(list);
+}
+
+function renderIncidentes(list) {
+  const container = document.getElementById('incidentesList');
+  container.innerHTML = '';
+  if (!list.length) {
+    container.innerHTML = '<div class="incident-empty">No hay incidentes registrados todavía</div>';
+    return;
+  }
+  list.forEach(i => {
+    const card = document.createElement('div');
+    card.className = 'incident-item';
+    card.innerHTML =
+      '<div class="incident-item-head">'
+        + '<span class="incident-item-type">' + i.tipo + '</span>'
+        + '<span class="incident-item-date">' + i.fecha + '</span>'
+      + '</div>'
+      + '<div class="incident-item-desc">' + i.desc.replace(/</g,'&lt;') + '</div>'
+      + '<div class="incident-item-resp">Responsable: ' + i.resp + '</div>'
+      + (i.photo ? '<div class="photo-thumbs"><img class="photo-thumb" src="' + i.photo + '" onclick="window.open(this.src)"></div>' : '')
+      + '<div class="incident-item-del" onclick="deleteIncidente(&#39;' + i.id + '&#39;)">Eliminar</div>';
+    container.appendChild(card);
+  });
+}
+
+function exportIncidentes() {
+  loadIncidentes().then(list => {
+    if (!list.length) { showToast('⚠️ No hay incidentes para exportar'); return; }
+    let txt = '📝 REGISTRO DE INCIDENTES — ÍMPETUS BOX\n================================\n\n';
+    list.slice().sort((a,b) => a.fecha.localeCompare(b.fecha)).forEach(i => {
+      txt += i.fecha + ' · ' + i.tipo + ' · Responsable: ' + i.resp + '\n' + i.desc + '\n\n';
+    });
+    txt += '================================\nGenerado el ' + now.toLocaleDateString('es-CL');
+    try {
+      navigator.clipboard.writeText(txt).then(() => showToast('📋 Copiado — pégalo donde lo necesites', '#2E7D32'));
+    } catch(e) {
+      const ta = document.createElement('textarea');
+      ta.value = txt; ta.style.cssText = 'position:fixed;opacity:0;';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showToast('📋 Copiado — pégalo donde lo necesites', '#2E7D32');
+    }
+  });
+}
+
+// ── Init ───────────────────────────────────────────────────────────
+loadLocalState();
+updateStats();
+loadArrivalToday();
+loadPhotosToday();
+loadIncidentes();
+document.getElementById(CLOUD_ENABLED ? 'syncBadge' : 'syncBadgeOff').style.display = 'inline-block';
+</script>
+
+
+</body></html>
