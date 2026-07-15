@@ -1,0 +1,129 @@
+// ═══════════════════════════════════════════════════════════
+// CÓDIGO PARA GOOGLE APPS SCRIPT — Backend del Checklist Ímpetus Box
+// ═══════════════════════════════════════════════════════════
+// QUÉ HACE: guarda y lee datos del checklist. Este script crea
+// SU PROPIA hoja de cálculo automáticamente la primera vez que
+// se usa — no necesitas crear una hoja de Sheets a mano.
+//
+// CÓMO USARLO (hazlo una sola vez, todo desde script.google.com):
+// 1. Ve a script.google.com desde el navegador de tu celular
+//    (activa "Sitio de escritorio" en el menú del navegador si
+//    la pantalla se ve muy recortada).
+// 2. Toca "Nuevo proyecto".
+// 3. Borra todo el código de ejemplo que aparece.
+// 4. Pega TODO este archivo completo.
+// 5. Toca el ícono de Guardar (disquete). Ponle un nombre al
+//    proyecto si te lo pide, ej: "Impetus Backend".
+// 6. Toca "Implementar" (Deploy) > "Nueva implementación".
+// 7. En "Tipo", elige "Aplicación web".
+// 8. "Ejecutar como": Yo (tu correo).
+//    "Quién tiene acceso": Cualquier usuario (Anyone).
+// 9. Toca "Implementar". Te pedirá autorizar permisos: acepta.
+//    Si Google muestra una advertencia de "app no verificada",
+//    toca "Avanzado" y luego "Ir a [nombre] (no seguro)" — es tu
+//    propio script, es seguro.
+// 10. Copia la "URL de la aplicación web" (empieza con
+//     https://script.google.com/macros/...).
+// 11. Pégala en el HTML del checklist, reemplazando el texto
+//     PEGA_AQUI_TU_URL_DE_APPS_SCRIPT.
+//
+// La primera vez que el checklist guarde algo, este script va a
+// crear automáticamente una hoja de cálculo llamada
+// "Impetus Box - Checklist Data (auto)" en tu Google Drive —
+// ahí quedan guardados todos los datos, por si quieres revisarlos
+// directamente alguna vez.
+//
+// Si más adelante modificas este código, tienes que volver a
+// "Implementar" > "Gestionar implementaciones" > ícono de lápiz >
+// "Nueva versión" > Implementar, para que los cambios se apliquen.
+// ═══════════════════════════════════════════════════════════
+
+const SHEET_NAME = 'KV';
+const SS_NAME = 'Impetus Box - Checklist Data (auto)';
+const PROP_KEY = 'SPREADSHEET_ID';
+
+function getSpreadsheet_() {
+  const props = PropertiesService.getScriptProperties();
+  let id = props.getProperty(PROP_KEY);
+  let ss;
+  if (id) {
+    try { ss = SpreadsheetApp.openById(id); } catch (e) { ss = null; }
+  }
+  if (!ss) {
+    ss = SpreadsheetApp.create(SS_NAME);
+    props.setProperty(PROP_KEY, ss.getId());
+  }
+  return ss;
+}
+
+function getSheet_() {
+  const ss = getSpreadsheet_();
+  let sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+    sheet.appendRow(['key', 'value', 'updated_at']);
+  }
+  // Si es la unica hoja y quedo la "Hoja 1" default vacia, la limpiamos
+  const defaultSheet = ss.getSheetByName('Hoja 1') || ss.getSheetByName('Sheet1');
+  if (defaultSheet && defaultSheet.getName() !== SHEET_NAME && defaultSheet.getLastRow() === 0) {
+    ss.deleteSheet(defaultSheet);
+  }
+  return sheet;
+}
+
+function findRow_(sheet, key) {
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === key) return i + 1; // 1-indexed row number
+  }
+  return -1;
+}
+
+function doGet(e) {
+  const key = e.parameter.key;
+  const sheet = getSheet_();
+
+  if (!key) {
+    return jsonOut_({ ok: false, error: 'Falta el parametro key' });
+  }
+
+  const row = findRow_(sheet, key);
+  if (row === -1) {
+    return jsonOut_({ ok: true, value: null });
+  }
+  const value = sheet.getRange(row, 2).getValue();
+  return jsonOut_({ ok: true, value: String(value) });
+}
+
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const body = JSON.parse(e.postData.contents);
+    const key = body.key;
+    const value = body.value;
+    if (!key) return jsonOut_({ ok: false, error: 'Falta key' });
+
+    const sheet = getSheet_();
+    const row = findRow_(sheet, key);
+    const now = new Date().toISOString();
+
+    if (row === -1) {
+      sheet.appendRow([key, value, now]);
+    } else {
+      sheet.getRange(row, 2).setValue(value);
+      sheet.getRange(row, 3).setValue(now);
+    }
+    return jsonOut_({ ok: true });
+  } catch (err) {
+    return jsonOut_({ ok: false, error: err.message });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function jsonOut_(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
